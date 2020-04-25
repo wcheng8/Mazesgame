@@ -9,10 +9,10 @@ var snakeBody = [];
 // initial direction
 var direction = "right";
 var snakeLength = 3;
-var allowPressKeys = true;
 var interval = setInterval(moveSnake, 100);
 drawFood();
-
+var allowPressKeys = true;
+function start() {}
 // continuous movement
 function moveSnake() {
   switch (direction) {
@@ -57,12 +57,15 @@ function moveSnake() {
 }
 // Check key hit
 document.onkeydown = function(e) {
+  if (!allowPressKeys) {
+    return null;
+  }
   var keyCode = e.keyCode;
 
   switch (keyCode) {
     // left
     case 37:
-      if (direction != "right" && currentPosition['x']>0) {
+      if (direction != "right" && currentPosition["x"] > 0) {
         currentPosition["x"] -= gridSize;
         direction = "left";
         drawSnake();
@@ -81,7 +84,10 @@ document.onkeydown = function(e) {
 
     // right
     case 39:
-      if (direction != "left" && currentPosition['x']<canvas.width - gridSize){
+      if (
+        direction != "left" &&
+        currentPosition["x"] < canvas.width - gridSize
+      ) {
         currentPosition["x"] += gridSize;
         direction = "right";
         drawSnake();
@@ -91,7 +97,10 @@ document.onkeydown = function(e) {
 
     // down
     case 40:
-      if (direction != "up" && currentPosition["y"] < canvas.height - gridSize) {
+      if (
+        direction != "up" &&
+        currentPosition["y"] < canvas.height - gridSize
+      ) {
         currentPosition["y"] += gridSize;
         direction = "down";
         drawSnake();
@@ -124,9 +133,19 @@ function hasEaten(element) {
   );
 }
 
+function pause() {
+  clearInterval(interval);
+  allowPressKeys = false;
+}
+
+function play() {
+  interval = setInterval(moveSnake, 100);
+  allowPressKeys = true;
+}
+
 function gameOver() {
   var score = (snakeLength - 3) * 10;
-  // clearInterval(interval)
+  pause();
   snakeBody = [];
   snakeLength = 3;
   alert("Game Over. Your score was " + score);
@@ -142,7 +161,7 @@ function drawSnake() {
     var itemToRemove = snakeBody.shift();
     ctx.clearRect(itemToRemove[0], itemToRemove[1], gridSize, gridSize);
   }
-  console.log(currentPosition)
+  console.log(currentPosition);
   // Create snake tail which doesn't include the first element of the snake body
   snakeTail = [...snakeBody];
   snakeTail.pop();
