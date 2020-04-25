@@ -62,31 +62,44 @@ document.onkeydown = function(e) {
   switch (keyCode) {
     // left
     case 37:
-      currentPosition["x"] -= gridSize;
-      direction = "left";
-      drawSnake();
+      if (direction != "right" && currentPosition['x']>0) {
+        currentPosition["x"] -= gridSize;
+        direction = "left";
+        drawSnake();
+        break;
+      }
       break;
     // up
     case 38:
-      currentPosition["y"] -= gridSize;
-      direction = "up";
-      drawSnake();
+      if (direction != "down" && currentPosition["y"] > 0) {
+        currentPosition["y"] -= gridSize;
+        direction = "up";
+        drawSnake();
+        break;
+      }
       break;
+
     // right
     case 39:
-      currentPosition["x"] += gridSize;
-      direction = "right";
-      drawSnake();
+      if (direction != "left" && currentPosition['x']<canvas.width - gridSize){
+        currentPosition["x"] += gridSize;
+        direction = "right";
+        drawSnake();
+        break;
+      }
       break;
+
     // down
     case 40:
-      currentPosition["y"] += gridSize;
-      direction = "down";
-      drawSnake();
+      if (direction != "up" && currentPosition["y"] < canvas.height - gridSize) {
+        currentPosition["y"] += gridSize;
+        direction = "down";
+        drawSnake();
+        break;
+      }
       break;
   }
 };
-
 
 function drawFood() {
   randomPoint = [
@@ -94,28 +107,31 @@ function drawFood() {
     Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize,
   ];
   // Check if snakebody has same point as drawfood
-  if (snakeBody.some(hasPoint)){
-    drawFood()
+  if (snakeBody.some(hasPoint)) {
+    drawFood();
   } else {
     ctx.fillStyle = "green";
     ctx.fillRect(randomPoint[0], randomPoint[1], gridSize, gridSize);
   }
 }
 function hasPoint(element) {
-  return (element[0] == randomPoint[0] && element[1] == randomPoint[1]);
+  return element[0] == randomPoint[0] && element[1] == randomPoint[1];
 }
 
-function hasEaten(element){
-  return (element[0] == currentPosition['x'] && element[1] == currentPosition['y'])
+function hasEaten(element) {
+  return (
+    element[0] == currentPosition["x"] && element[1] == currentPosition["y"]
+  );
 }
 
-function gameOver(){
-  var score = (snakeLength -3)*10
+function gameOver() {
+  var score = (snakeLength - 3) * 10;
   // clearInterval(interval)
-  snakeBody = []
-  snakeLength = 3
-  allowPressKeys = false;
-  alert("Game Over. Your score was "+score)
+  snakeBody = [];
+  snakeLength = 3;
+  alert("Game Over. Your score was " + score);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawFood();
 }
 
 function drawSnake() {
@@ -126,15 +142,19 @@ function drawSnake() {
     var itemToRemove = snakeBody.shift();
     ctx.clearRect(itemToRemove[0], itemToRemove[1], gridSize, gridSize);
   }
+  console.log(currentPosition)
   // Create snake tail which doesn't include the first element of the snake body
-  snakeTail = [...snakeBody]
-  snakeTail.pop()
-  if (snakeTail.some(hasEaten)){
-    gameOver()
+  snakeTail = [...snakeBody];
+  snakeTail.pop();
+  if (snakeTail.some(hasEaten)) {
+    gameOver();
     return false;
   }
-  if (currentPosition['x'] == randomPoint[0] && currentPosition['y']==randomPoint[1]){
-    drawFood()
-    snakeLength+=1
+  if (
+    currentPosition["x"] == randomPoint[0] &&
+    currentPosition["y"] == randomPoint[1]
+  ) {
+    drawFood();
+    snakeLength += 1;
   }
 }
