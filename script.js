@@ -1,37 +1,54 @@
 // Get Game canvas
-var gameCanvas = document.getElementById("gameCanvas");
+var canvas = document.getElementById("gameCanvas");
 // Return a two dimensional drawing context
 var ctx = gameCanvas.getContext("2d");
 
 var currentPosition = { x: 50, y: 50 };
 var gridSize = 10;
-
+var snakeBody = []
 // initial direction
-var direction = "down"
-setInterval(moveSnake,100)
+var direction = "right";
+setInterval(moveSnake, 100);
 
 // continuous movement
-function moveSnake(){
-  switch(direction){
+function moveSnake() {
+  switch (direction) {
     // left
-    case 'left':
-      currentPosition.x -= gridSize;
-      drawSnake();
+    case "left":
+      if(currentPosition["x"]>0){
+        currentPosition["x"] -= gridSize;
+        drawSnake()
+        console.log(currentPosition)
+        break;
+      }
       break;
+
     // up
-    case 'up':
-      currentPosition.y -= gridSize;
-      drawSnake();
+    case "up":
+      if (currentPosition["y"]>0){
+        currentPosition["y"] -= gridSize;
+        drawSnake()
+        break;
+      }
       break;
+
     // right
-    case 'right':
-      currentPosition.x += gridSize;
-      drawSnake();
+    case "right":
+      if (currentPosition["x"]<canvas.width-gridSize){
+        currentPosition["x"] += gridSize;
+        drawSnake()
+        console.log(currentPosition)
+        break;
+      }
       break;
     // down
-    case 'down':
-      currentPosition.y += gridSize;
-      drawSnake();
+    case "down":
+      if (currentPosition["y"]<canvas.height-gridSize){
+        currentPosition["y"] += gridSize;
+        drawSnake()
+        console.log(currentPosition)
+        break;
+      }
       break;
   }
 }
@@ -43,64 +60,39 @@ document.onkeydown = function(e) {
   switch (keyCode) {
     // left
     case 37:
-      currentPosition.x -= gridSize;
-      drawSnake();
-      console.log(keyCode);
+      currentPosition["x"] -= gridSize;
+      direction ='left'
+      drawSnake()
       break;
     // up
     case 38:
-      currentPosition.y -= gridSize;
-      drawSnake();
-      console.log(keyCode);
+      currentPosition["y"] -= gridSize;
+      direction ='up'
+      drawSnake()
       break;
     // right
     case 39:
-      currentPosition.x += gridSize;
-      drawSnake();
-
-      console.log(keyCode);
+      currentPosition["x"] += gridSize;
+      direction ='right'
+      drawSnake()
       break;
     // down
     case 40:
-      currentPosition.y += gridSize;
-      drawSnake();
-      console.log(keyCode);
+      currentPosition["y"] += gridSize;
+      direction ='down'
+      drawSnake()
       break;
   }
 };
 
-function drawSnake() {
-  ctx.fillRect(currentPosition.x, currentPosition.y, gridSize, gridSize);
-}
 
 ctx.fillStyle = "rgb(200,0,0)";
-ctx.fillRect(currentPosition.x, currentPosition.y, gridSize, gridSize);
+function drawSnake() {
+  snakeBody.push([currentPosition['x'], currentPosition['y']])
+  ctx.fillRect(currentPosition["x"], currentPosition["y"], gridSize, gridSize);
+  if (snakeBody.length>3){
+    var itemToRemove = snakeBody.shift()
+    ctx.clearRect(itemToRemove[0], itemToRemove[1],gridSize,gridSize)
+  }
+}
 
-// // Start Horizontal velocity / Vertical Velocity
-// let dx = 10;
-// let dy = 0;
-
-// advanceSnake()
-// dx = 0
-// dy = -10
-
-// advanceSnake()
-
-// drawSnake()
-
-// function advanceSnake(){
-//   const head = {x:snake[0].x+dx, y:snake[0].y + dy}
-//   snake.unshift(head);
-//   snake.pop();
-// }
-
-// function drawSnakePart(snakePart) {
-//   ctx.fillStyle = "lightgreen";
-//   ctx.strokestyle = "darkgreen";
-//   ctx.fillRect(snakePart.x, snakePart.y, 10, 10);
-//   ctx.strokeRect(snakePart.x, snakePart.y, 10, 10);
-// }
-
-// function drawSnake() {
-//   snake.forEach(drawSnakePart);
-// }
