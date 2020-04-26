@@ -10,31 +10,53 @@ var snakeBody = [];
 var direction = "right";
 var snakeLength = 3;
 var interval = setInterval(moveSnake, 100);
-var score = 0
+var score = 0;
 drawFood();
 var allowPressKeys = true;
+var safety = false;
 
-document.getElementById("play_menu").onclick = function(){
-  pause()
-  document.getElementById("pause_menu").style.display = 'block'
-  document.getElementById("play_menu").style.display = 'hidden'
-}
-document.getElementById("pause_resume").onclick = function(){
- play() 
- document.getElementById("pause_menu").style.display = 'none'
-}
-document.getElementById("pause_restart").onclick = function(){
-  pause()
+document.getElementById("play_menu").onclick = function() {
+  pause();
+  document.getElementById("pause_menu").style.display = "block";
+  // document.getElementById("play_menu").style.display = "none";
+};
+document.getElementById("pause_togglesafety").onclick = function() {
+  if (safety) {
+    safety = false;
+    document.getElementById("pause_togglesafety").innerHTML = "Safify";
+  } else {
+    safety = true;
+    document.getElementById("pause_togglesafety").innerHTML = "Unsafe";
+  }
+};
+document.getElementById("pause_resume").onclick = function() {
+  play();
+  document.getElementById("pause_menu").style.display = "none";
+};
+document.getElementById("pause_restart").onclick = function() {
+  pause();
   snakeBody = [];
   snakeLength = 3;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawFood();
-  currentPosition = {x:50,y:50}
-  play()
-  document.getElementById("pause_menu").style.display = 'none'
-}
+  currentPosition = { x: 50, y: 50 };
+  play();
+  document.getElementById("pause_menu").style.display = "none";
+};
 
-function start() {}
+// Check if it on the border 
+function isborder() {
+  if (snakeBody[1][0] <= 0 ){
+    gameOver();
+  } else if (snakeBody[1][1] <= 0) {
+    gameOver();
+  } else if (snakeBody[1][0] >= canvas.width - gridSize) {
+    gameOver();
+  } else if (snakeBody[1][1] >= canvas.height - gridSize) {
+    gameOver();
+  } else {
+  }
+}
 // continuous movement
 function moveSnake() {
   switch (direction) {
@@ -170,15 +192,12 @@ function gameOver() {
   alert("Game Over. Your score was " + score);
   snakeBody = [];
   snakeLength = 3;
-  currentPosition = {x:50,y:50}
+  currentPosition = { x: 50, y: 50 };
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawFood();
-  play()
+  play();
 }
-function updateScore(){
-  var score = (snakeLength - 3)*10
-  document.getElementById('score').innerText = score;
-}
+// Main function that setinterval calls
 function drawSnake() {
   ctx.fillStyle = "rgb(200,0,0)";
   snakeBody.push([currentPosition["x"], currentPosition["y"]]);
@@ -187,7 +206,9 @@ function drawSnake() {
     var itemToRemove = snakeBody.shift();
     ctx.clearRect(itemToRemove[0], itemToRemove[1], gridSize, gridSize);
   }
-  // console.log(score);
+  if (!safety) {
+    isborder();
+  }
   // Create snake tail which doesn't include the first element of the snake body
   snakeTail = [...snakeBody];
   snakeTail.pop();
@@ -195,6 +216,7 @@ function drawSnake() {
     gameOver();
     return false;
   }
+  console.log(snakeBody)
   if (
     currentPosition["x"] == randomPoint[0] &&
     currentPosition["y"] == randomPoint[1]
@@ -202,8 +224,6 @@ function drawSnake() {
     drawFood();
     snakeLength += 1;
     score += 10;
-    document.getElementById('score').innerText = score;
+    document.getElementById("score").innerText = score;
   }
-  return score
 }
-
