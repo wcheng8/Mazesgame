@@ -18,7 +18,7 @@ var safety = false;
 document.getElementById("play_menu").onclick = function() {
   pause();
   document.getElementById("pause_menu").style.display = "block";
-  // document.getElementById("play_menu").style.display = "none";
+  document.getElementById("play_menu").style.display = "none";
 };
 document.getElementById("pause_togglesafety").onclick = function() {
   if (safety) {
@@ -32,6 +32,7 @@ document.getElementById("pause_togglesafety").onclick = function() {
 document.getElementById("pause_resume").onclick = function() {
   play();
   document.getElementById("pause_menu").style.display = "none";
+  document.getElementById("play_menu").style.display = "block";
 };
 document.getElementById("pause_restart").onclick = function() {
   pause();
@@ -42,19 +43,22 @@ document.getElementById("pause_restart").onclick = function() {
   currentPosition = { x: 50, y: 50 };
   play();
   document.getElementById("pause_menu").style.display = "none";
+  document.getElementById("play_menu").style.display = "block";
 };
 
-// Check if it on the border 
+// Check if it on the border
 function isborder() {
-  if (snakeBody[1][0] <= 0 ){
-    gameOver();
-  } else if (snakeBody[1][1] <= 0) {
-    gameOver();
-  } else if (snakeBody[1][0] >= canvas.width - gridSize) {
-    gameOver();
-  } else if (snakeBody[1][1] >= canvas.height - gridSize) {
-    gameOver();
-  } else {
+  if (snakeLength >= 3) {
+    if (snakeBody[1][0] <= 0) {
+      gameOver();
+    } else if (snakeBody[1][1] <= 0) {
+      gameOver();
+    } else if (snakeBody[1][0] >= canvas.width - gridSize) {
+      gameOver();
+    } else if (snakeBody[1][1] >= canvas.height - gridSize) {
+      gameOver();
+    } else {
+    }
   }
 }
 // continuous movement
@@ -189,6 +193,7 @@ function play() {
 
 function gameOver() {
   pause();
+  var score = (snakeLength - 3)*10
   alert("Game Over. Your score was " + score);
   snakeBody = [];
   snakeLength = 3;
@@ -196,6 +201,12 @@ function gameOver() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawFood();
   play();
+  score = 0;
+}
+// Update score
+function updateScore(){
+  var score = (snakeLength - 3)*10
+  document.getElementById('score').innerText = score;
 }
 // Main function that setinterval calls
 function drawSnake() {
@@ -216,14 +227,13 @@ function drawSnake() {
     gameOver();
     return false;
   }
-  console.log(snakeBody)
+  console.log(snakeBody);
   if (
     currentPosition["x"] == randomPoint[0] &&
     currentPosition["y"] == randomPoint[1]
   ) {
     drawFood();
     snakeLength += 1;
-    score += 10;
-    document.getElementById("score").innerText = score;
   }
+  updateScore()
 }
