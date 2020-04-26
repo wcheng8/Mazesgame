@@ -5,3 +5,16 @@ canvas {
 #pause_menu{
   display: none;
 }
+#logo{
+  font-size: 20px;
+  font-weight: bold;
+}
+.head_content{
+  display: flex;
+  justify-content: space-around;
+}
+
+.menu{
+  display:flex;
+  justify-content: center;
+}

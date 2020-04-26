@@ -10,11 +10,14 @@ var snakeBody = [];
 var direction = "right";
 var snakeLength = 3;
 var interval = setInterval(moveSnake, 100);
+var score = 0
 drawFood();
 var allowPressKeys = true;
+
 document.getElementById("play_menu").onclick = function(){
   pause()
   document.getElementById("pause_menu").style.display = 'block'
+  document.getElementById("play_menu").style.display = 'hidden'
 }
 document.getElementById("pause_resume").onclick = function(){
  play() 
@@ -30,7 +33,6 @@ document.getElementById("pause_restart").onclick = function(){
   play()
   document.getElementById("pause_menu").style.display = 'none'
 }
-
 
 function start() {}
 // continuous movement
@@ -164,7 +166,6 @@ function play() {
 }
 
 function gameOver() {
-  var score = (snakeLength - 3) * 10;
   pause();
   alert("Game Over. Your score was " + score);
   snakeBody = [];
@@ -174,7 +175,10 @@ function gameOver() {
   drawFood();
   play()
 }
-
+function updateScore(){
+  var score = (snakeLength - 3)*10
+  document.getElementById('score').innerText = score;
+}
 function drawSnake() {
   ctx.fillStyle = "rgb(200,0,0)";
   snakeBody.push([currentPosition["x"], currentPosition["y"]]);
@@ -183,7 +187,7 @@ function drawSnake() {
     var itemToRemove = snakeBody.shift();
     ctx.clearRect(itemToRemove[0], itemToRemove[1], gridSize, gridSize);
   }
-  console.log(currentPosition);
+  // console.log(score);
   // Create snake tail which doesn't include the first element of the snake body
   snakeTail = [...snakeBody];
   snakeTail.pop();
@@ -197,5 +201,9 @@ function drawSnake() {
   ) {
     drawFood();
     snakeLength += 1;
+    score += 10;
+    document.getElementById('score').innerText = score;
   }
+  return score
 }
+
