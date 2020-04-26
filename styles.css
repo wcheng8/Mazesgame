@@ -2,3 +2,6 @@ canvas {
   background-color: aqua;
   border: 1px solid black;
 }
+#pause_menu{
+  display: none;
+}

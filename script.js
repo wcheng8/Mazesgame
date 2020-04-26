@@ -12,6 +12,26 @@ var snakeLength = 3;
 var interval = setInterval(moveSnake, 100);
 drawFood();
 var allowPressKeys = true;
+document.getElementById("play_menu").onclick = function(){
+  pause()
+  document.getElementById("pause_menu").style.display = 'block'
+}
+document.getElementById("pause_resume").onclick = function(){
+ play() 
+ document.getElementById("pause_menu").style.display = 'none'
+}
+document.getElementById("pause_restart").onclick = function(){
+  pause()
+  snakeBody = [];
+  snakeLength = 3;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawFood();
+  currentPosition = {x:50,y:50}
+  play()
+  document.getElementById("pause_menu").style.display = 'none'
+}
+
+
 function start() {}
 // continuous movement
 function moveSnake() {
@@ -146,11 +166,13 @@ function play() {
 function gameOver() {
   var score = (snakeLength - 3) * 10;
   pause();
+  alert("Game Over. Your score was " + score);
   snakeBody = [];
   snakeLength = 3;
-  alert("Game Over. Your score was " + score);
+  currentPosition = {x:50,y:50}
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawFood();
+  play()
 }
 
 function drawSnake() {
